@@ -11,8 +11,8 @@ route:
 receivers:
   - name: "telegram"
     telegram_configs:
-      - bot_token: "${TELEGRAM_BOT_TOKEN}"
-        chat_id: ${TELEGRAM_CHAT_ID}
+      - bot_token: "8311762477:AAHg9d3QNcioPjMvBZyZcJtnB9YdV10XQTA"
+        chat_id: 6207272674
         message: |
           🚨 *{{ .GroupLabels.alertname }}*
           Status: {{ .Status | toUpper }}
