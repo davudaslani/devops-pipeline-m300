@@ -68,11 +68,14 @@ services:
     environment:
       - GITEA_INSTANCE_URL=http://gitea:3000
       - GITEA_RUNNER_REGISTRATION_TOKEN=${GITEA_RUNNER_TOKEN:-changeme}
+      - GITEA_RUNNER_NAME=local-runner
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./pipeline:/data
     networks:
       - devops-net
+    extra_hosts:
+      - "gitea:172.19.0.1"
     depends_on:
       - gitea
 
