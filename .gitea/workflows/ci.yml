@@ -15,6 +15,10 @@ jobs:
 
       - name: Code auschecken
         uses: actions/checkout@v4
+        with:
+          repository: ${{ gitea.repository }}
+          ref: ${{ gitea.ref }}
+          token: ${{ gitea.token }}
 
       - name: Python Setup
         uses: actions/setup-python@v5
@@ -27,13 +31,11 @@ jobs:
           pip install -r app/requirements.txt
           pip install pytest pytest-cov flake8
 
-      - name: Linting (flake8)
-        run: |
-          flake8 app/app.py --max-line-length=100 --ignore=E501
+      - name: Linting
+        run: flake8 app/app.py --max-line-length=100
 
       - name: Unit Tests
-        run: |
-          pytest app/tests/ -v --cov=app --cov-report=term-missing
+        run: pytest app/tests/ -v --cov=app --cov-report=term-missing
 
   build:
     name: Docker Build
@@ -43,30 +45,18 @@ jobs:
 
       - name: Code auschecken
         uses: actions/checkout@v4
+        with:
+          repository: ${{ gitea.repository }}
+          ref: ${{ gitea.ref }}
+          token: ${{ gitea.token }}
 
       - name: Docker Image bauen
         run: |
-          docker build -t flask-app:${{ github.sha }} ./app
-          docker tag flask-app:${{ github.sha }} flask-app:latest
+          docker build -t flask-app:latest ./app
 
-      - name: Image testen (Smoke Test)
+      - name: Smoke Test
         run: |
-          docker run -d --name test-app -p 5000:5000 flask-app:latest
+          docker run -d --name test-app -p 5001:5000 flask-app:latest
           sleep 5
-          curl -f http://localhost:5000/health || exit 1
+          curl -f http://localhost:5001/health || exit 1
           docker stop test-app && docker rm test-app
-
-  deploy:
-    name: Deploy (lokal)
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    steps:
-
-      - name: Code auschecken
-        uses: actions/checkout@v4
-
-      - name: Stack neu deployen
-        run: |
-          docker compose -f docker-compose.yml up -d --build app
-          echo "✅ Deployment abgeschlossen: $(date)"
