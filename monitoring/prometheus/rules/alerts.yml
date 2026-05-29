@@ -1,0 +1,30 @@
+groups:
+  - name: app-alerts
+    rules:
+
+      - alert: AppDown
+        expr: up{job="flask-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Flask App ist down"
+          description: "Der flask-app Container antwortet nicht mehr."
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hohe Error-Rate auf der App"
+          description: "Mehr als 10% der Requests sind 5xx Fehler."
+
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RAM Auslastung über 85%"
+          description: "Der Host hat weniger als 15% freien RAM."
