@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
   devops-net:
     driver: bridge
@@ -66,7 +64,7 @@ services:
     container_name: act-runner
     restart: unless-stopped
     environment:
-      - GITEA_INSTANCE_URL=http://gitea:3000
+      - GITEA_INSTANCE_URL=http://172.19.0.6:3000
       - GITEA_RUNNER_REGISTRATION_TOKEN=${GITEA_RUNNER_TOKEN:-changeme}
       - GITEA_RUNNER_NAME=local-runner
     volumes:
@@ -74,8 +72,6 @@ services:
       - ./pipeline:/data
     networks:
       - devops-net
-    extra_hosts:
-      - "gitea:172.19.0.1"
     depends_on:
       - gitea
 
@@ -86,6 +82,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
       - prometheus-data:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
@@ -155,7 +152,7 @@ services:
     networks:
       - devops-net
 
- # In docker-compose.yml ergänzen:
+  # ─── Monitoring: Node Exporter ────────────────────────────────
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
