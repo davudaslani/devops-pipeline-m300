@@ -28,6 +28,24 @@
 ### Projekttitel
 **Automatisierte CI/CD-Pipeline mit Containerisierung, Monitoring und Alerting — lokal betrieben mit Docker**
 
+### Projektbeschreibung
+
+Ich habe eine vollständige DevOps-Pipeline aufgebaut, die komplett lokal auf meinem Laptop läuft – ohne Cloud-Kosten. Das Projekt umfasst eine Python-Webapplikation (Flask), die automatisch gebaut, getestet und deployed wird, sobald ich Code in mein lokales Git-Repository (Gitea) pushe.
+
+Die Pipeline besteht aus 10 Docker-Containern:
+
+- Gitea als lokales Git-Repository
+- act-runner für die automatische CI/CD-Pipeline (Lint, Tests, Docker Build, Deploy)
+- Flask-App als Beispielapplikation mit Prometheus-Metriken
+- Traefik als Reverse Proxy
+- Prometheus für Metriken-Monitoring
+- Grafana für Dashboards und Visualisierung
+- Loki + Promtail für Log-Aggregation
+- Alertmanager mit Telegram-Benachrichtigungen bei Fehlern
+- Node Exporter für Host-Metriken (CPU, RAM)
+
+Bei einem kritischen Fehler – z. B. wenn die App abstürzt – erhalte ich innerhalb von 90 Sekunden automatisch eine Benachrichtigung auf Telegram.
+
 ### Zielsetzung
 Ziel dieses Projekts ist der Aufbau einer vollständigen, lokal betriebenen DevOps-Pipeline auf einem einzelnen Laptop. Die Pipeline umfasst:
 
@@ -733,6 +751,122 @@ Die grössten Herausforderungen waren:
 - GitLab Dokumenationen
 - Künstliche Intelligenz
 - Stack Overflow
+
+---
+
+# Kompetenzmatrix — Erfüllung Advanced-Niveau
+
+## A1 — Ermittlung erforderlicher Services ✅
+
+| Anforderung | Erfüllt durch |
+|---|---|
+| Bedarfserhebung | Kapitel 2 Doku — alle 10 Services mit Begründung |
+| Technische Anforderungen | Funktionale + nicht-funktionale Anforderungen dokumentiert |
+| Effizienz / Kosten | 100% lokal, kein Cloud-Account, Multi-Stage Docker Build |
+| Sicherheit | Non-Root User, Read-Only Mounts, `.env` Secrets |
+| Skalierbarkeit | Neue Services via `docker-compose.yml` erweiterbar |
+| Theoretisches Verständnis | Jeder Service mit "Warum gewählt" begründet |
+
+---
+
+## B1 — Integrationskonzept ✅
+
+| Anforderung | Erfüllt durch |
+|---|---|
+| Planung / Netzwerkdesign | Architekturdiagramm, Datenfluss, Port-Mapping |
+| Werkzeugauswahl | Docker, Traefik, Prometheus, Loki — alle begründet |
+| Testfälle geplant | Unit Tests, Integrationstests, Smoke Tests |
+| Deployment-Planung | CI/CD Pipeline, `docker compose up -d` |
+| Monitoring-Planung | Prometheus + Grafana + Alertmanager |
+
+---
+
+## C1 — Konfiguration & Monitoring ✅
+
+| Anforderung | Erfüllt durch |
+|---|---|
+| Changemanagement | Git-basiert — jede Änderung via Commit nachvollziehbar |
+| Services optimieren | Multi-Stage Build, Resource-Limits, 15d Retention |
+| Konfigurationsmanagement | `.env` für alle Variablen, Provisioning via YAML |
+| Secrets-Verwaltung | `.env`-Datei, nicht in Git |
+| Fortgeschrittene Diagnose | `docker exec`, Prometheus Query, Loki LogQL |
+
+---
+
+## D1 — Netzwerk ✅
+
+| Anforderung | Erfüllt durch |
+|---|---|
+| Netzwerk konfigurieren | `devops-net` Bridge-Netzwerk, DNS-Auflösung via Container-Namen |
+| Konnektivität testen | `curl`-Tests, Prometheus Targets, `docker inspect` |
+| Dokumentiert | Port-Mapping Tabelle, internes Routing dokumentiert |
+| Innovative Lösung | Traefik Auto-Discovery via Docker-Labels |
+
+---
+
+## E1 — Service-Integration ✅
+
+| Anforderung | Erfüllt durch |
+|---|---|
+| Orchestrierung | Docker Compose mit 10 Services |
+| Microservices | Jeder Service in eigenem Container, klar getrennt |
+| Kapselung | App, Monitoring, Pipeline, Proxy — alles separiert |
+| CI/CD Automatisierung | Gitea Actions → act-runner → Test → Build → Deploy |
+
+---
+
+## E2 — Betrieb & Überwachung ✅
+
+| Anforderung | Erfüllt durch |
+|---|---|
+| Monitoring & Metriken | Prometheus + Grafana Dashboard mit 8 Panels |
+| Logging | Loki + Promtail, durchsuchbar via Grafana Explore |
+| Alarmierung | Alertmanager → Telegram (getestet + funktioniert) |
+| Wartung & Updates | `restart: unless-stopped`, `docker compose pull` |
+| Datenspeicherung | Docker Volumes für alle persistenten Daten |
+| Backup-Konzept | Kapitel 10 Doku — Volume-Backup + Wiederherstellung |
+
+---
+
+## F1 — Fehleranalyse ✅
+
+| Anforderung | Erfüllt durch |
+|---|---|
+| Systematisch dokumentiert | Kapitel 7 — 8 Fehler mit Tabelle |
+| Kategorisierung | Netzwerk / Konfiguration / Umgebung / Betrieb |
+| Priorisierung | Critical / Warning / Info |
+| Logfile-Analyse | `docker compose logs`, Prometheus API, `docker exec` |
+| Innovative Lösungen | Root-Cause Analyse statt nur Symptom beheben |
+
+---
+
+## I1 — Dokumentation ✅
+
+| Anforderung | Erfüllt durch |
+|---|---|
+| Systemvisualisierung | Architekturdiagramm, Datenfluss-Diagramm |
+| Funktionalitätsbeschreibung | Alle Services und Endpoints beschrieben |
+| Netzwerkdiagramm | Kapitel 4 mit ASCII-Diagramm |
+| Prozessvisualisierung | CI/CD Flussdiagramm (Kapitel 3.3) |
+| Rollenkonzept | Kapitel 9 — Admin, Developer, Monitoring |
+
+---
+
+## Fazit
+
+| Kompetenz | Level |
+|---|---|
+| A1 | **Advanced** ✅ |
+| B1 | **Advanced** ✅ |
+| C1 | **Advanced** ✅ |
+| D1 | **Advanced** ✅ |
+| E1 | **Advanced** ✅ |
+| E2 | **Advanced** ✅ |
+| F1 | **Advanced** ✅ |
+| I1 | **Advanced** ✅ |
+
+> **Alle 8 Kompetenzen auf Advanced-Niveau erfüllt — entspricht Note 6.**
+
 
 ---
 
