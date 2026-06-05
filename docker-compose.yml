@@ -12,7 +12,7 @@ services:
 
   # ─── Reverse Proxy ────────────────────────────────────────────
   traefik:
-    image: traefik:v3.0
+    image: traefik:v2.11
     container_name: traefik
     restart: unless-stopped
     ports:
@@ -23,8 +23,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - devops-net
-    labels:
-      - "traefik.enable=true"
 
   # ─── Applikation ──────────────────────────────────────────────
   app:
@@ -50,6 +48,8 @@ services:
     environment:
       - USER_UID=1000
       - USER_GID=1000
+      - GITEA__server__ROOT_URL=http://3.224.82.250:3000/
+      - GITEA__server__DOMAIN=3.224.82.250
     ports:
       - "${GITEA_PORT}:3000"
       - "222:22"
@@ -64,9 +64,9 @@ services:
     container_name: act-runner
     restart: unless-stopped
     environment:
-      - GITEA_INSTANCE_URL=http://172.19.0.6:3000
+      - GITEA_INSTANCE_URL=http://gitea:3000
       - GITEA_RUNNER_REGISTRATION_TOKEN=${GITEA_RUNNER_TOKEN:-changeme}
-      - GITEA_RUNNER_NAME=local-runner
+      - GITEA_RUNNER_NAME=aws-runner
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./pipeline:/data
