@@ -754,6 +754,160 @@ Die grössten Herausforderungen waren:
 
 ---
 
+# AWS Cloud Deployment
+
+**Datum:** Juni 2026  
+**EC2 Public IP:** 3.224.82.250  
+**Region:** us-east-1
+
+---
+
+## EC2 Instance
+
+| Einstellung | Wert |
+|---|---|
+| AMI | Ubuntu Server 24.04 LTS |
+| Instance Type | t3.medium (2 vCPU, 4GB RAM) |
+| Storage | 20GB gp3 |
+
+### Security Group — Inbound Rules
+
+| Port | Quelle | Service |
+|---|---|---|
+| 22 | Meine IP | SSH |
+| 80 | 0.0.0.0/0 | App |
+| 8080 | Meine IP | Traefik |
+| 3000 | Meine IP | Gitea |
+| 3001 | Meine IP | Grafana |
+| 9090 | Meine IP | Prometheus |
+| 9093 | Meine IP | Alertmanager |
+
+---
+
+## Änderungen gegenüber lokalem Setup
+
+### 1. Docker installieren (auf EC2)
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker ubuntu
+```
+
+### 2. Traefik downgrade auf v2.11
+
+Traefik v3.0 ist inkompatibel mit der Docker API auf AWS.
+
+```yaml
+# docker-compose.yml
+traefik:
+  image: traefik:v2.11
+```
+
+### 3. Traefik Router-Name geändert
+
+Konflikt zwischen Traefik-Container und App-Router behoben.
+
+```yaml
+# docker-compose.yml — App Labels
+- "traefik.http.routers.flask.rule=PathPrefix(`/`)"
+- "traefik.http.services.flask.loadbalancer.server.port=5000"
+```
+
+Labels beim Traefik-Container komplett entfernt.
+
+### 4. Gitea öffentliche IP gesetzt
+
+```yaml
+# docker-compose.yml — Gitea Environment
+- GITEA__server__ROOT_URL=http://3.224.82.250:3000/
+- GITEA__server__DOMAIN=3.224.82.250
+```
+
+---
+
+## Aufgetretene Fehler
+
+| Fehler | Ursache | Fix |
+|---|---|---|
+| `client version 1.24 is too old` | Traefik v3.0 inkompatibel | Downgrade auf v2.11 |
+| `Router defined multiple times` | Router-Name Konflikt | Router umbenannt auf `flask` |
+| `404 page not found` | `Host(localhost)` gilt nicht auf AWS | `PathPrefix(/)` verwendet |
+| `flask-app unhealthy` | Timing beim Start | `docker compose restart app` |
+
+---
+
+## Services auf AWS
+
+| Service | URL |
+|---|---|
+| App | http://3.224.82.250 |
+| Traefik | http://3.224.82.250:8080 |
+| Gitea | http://3.224.82.250:3000 |
+| Prometheus | http://3.224.82.250:9090 |
+| Grafana | http://3.224.82.250:3001 |
+| Alertmanager | http://3.224.82.250:9093 |
+
+---
+
+## Backup-Automatisierung
+
+Täglicher Cronjob der alle Docker Volumes lokal sichert und per Telegram benachrichtigt.
+
+### Script
+
+```
+backup/backup.sh
+```
+
+### Cronjob (täglich 02:00 Uhr)
+
+```bash
+0 2 * * * /home/ubuntu/devops-pipeline-m300/backup/backup.sh >> /var/log/devops-backup.log 2>&1
+```
+
+### Was wird gesichert
+
+| Datei | Inhalt |
+|---|---|
+| `gitea-data.tar.gz` | Repositories, User |
+| `grafana-data.tar.gz` | Dashboards, Einstellungen |
+| `prometheus-data.tar.gz` | Metriken |
+| `loki-data.tar.gz` | Logs |
+| `configs.tar.gz` | Alle Config-Dateien |
+
+Aufbewahrung: **7 Tage lokal**, danach automatisch gelöscht.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Kompetenzmatrix — Erfüllung Advanced-Niveau
 
 ## A1 — Ermittlung erforderlicher Services ✅
@@ -866,6 +1020,8 @@ Die grössten Herausforderungen waren:
 | I1 | **Advanced** ✅ |
 
 > **Alle 8 Kompetenzen auf Advanced-Niveau erfüllt — entspricht Note 6.**
+
+
 
 
 ---
