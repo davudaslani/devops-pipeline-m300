@@ -1,4 +1,4 @@
-# Projektdokumentation — Lokale DevOps-Pipeline
+# Projektdokumentation — Cloud & Lokale DevOps-Pipeline
 
 **Modul:** Informatik — M300
 **Autor:** Davud Aslani  
@@ -744,16 +744,6 @@ Die grössten Herausforderungen waren:
 
 ---
 
-## Quelle
-
-- Eigenes Wissen
-- YouTube
-- GitLab Dokumenationen
-- Künstliche Intelligenz
-- Stack Overflow
-
----
-
 # AWS Cloud Deployment
 
 **Datum:** Juni 2026  
@@ -769,6 +759,10 @@ Die grössten Herausforderungen waren:
 | AMI | Ubuntu Server 24.04 LTS |
 | Instance Type | t3.medium (2 vCPU, 4GB RAM) |
 | Storage | 20GB gp3 |
+
+![EC2 Instanz erstellt](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20cloud/AWS-EC2-erstellen.png)
+
+![SSH Verbindung](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20cloud/SSH-Verbindung-EC2.png)
 
 ### Security Group — Inbound Rules
 
@@ -865,6 +859,8 @@ backup/backup.sh
 0 2 * * * /home/ubuntu/devops-pipeline-m300/backup/backup.sh >> /var/log/devops-backup.log 2>&1
 ```
 
+![crontab for backup](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20cloud/crontab-for-backup.png)
+
 ### Was wird gesichert
 
 | Datei | Inhalt |
@@ -876,6 +872,8 @@ backup/backup.sh
 | `configs.tar.gz` | Alle Config-Dateien |
 
 Aufbewahrung: **7 Tage lokal**, danach automatisch gelöscht.
+
+![Backup gesichert](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20cloud/Backup-Job-Sicherung.png)
 
 
 
@@ -1021,8 +1019,15 @@ Aufbewahrung: **7 Tage lokal**, danach automatisch gelöscht.
 
 > **Alle 8 Kompetenzen auf Advanced-Niveau erfüllt — entspricht Note 6.**
 
+---
 
+## Quelle
 
+- Eigenes Wissen
+- YouTube
+- GitLab Dokumenationen
+- Künstliche Intelligenz
+- Stack Overflow
 
 ---
 
