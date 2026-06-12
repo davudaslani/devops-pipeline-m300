@@ -876,28 +876,100 @@ Aufbewahrung: **7 Tage lokal**, danach automatisch gelöscht.
 ![Backup gesichert](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20cloud/Backup-Job-Sicherung.png)
 
 
+---
 
-
-
-
-
-
-
-
-
-
+# Uptime Kuma — Status-Page
+ 
+Uptime Kuma ist eine selbst-gehostete Status-Page die zeigt welche Services UP oder DOWN sind. Ähnlich wie status.github.com — alle Services auf einen Blick überwacht.
+ 
+---
+ 
+## Installation
+ 
+### 1. docker-compose.yml anpassen
+ 
+Service hinzufügen:
+ 
+```yaml
+  # ─── Uptime Kuma (Status-Page) ────────────────────────────────
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime-kuma
+    restart: unless-stopped
+    volumes:
+      - uptime-kuma-data:/app/data
+    ports:
+      - "3003:3001"
+    networks:
+      - devops-net
+```
+ 
+Volume ergänzen:
+ 
+```yaml
+volumes:
+  uptime-kuma-data:
+```
+ 
+### 2. Starten
+ 
+```bash
+docker compose up -d uptime-kuma
+```
+ 
+### 3. Einrichten
+ 
+```
+Browser: http://localhost:3003
+ 
+1. Account erstellen: admin / admin123
+2. "Create" klicken
+```
+ 
+---
+ 
+## Monitors konfigurieren
+ 
+Für jeden Service einen Monitor erstellen unter "Add New Monitor":
+ 
+| Service | URL | Typ |
+|---|---|---|
+| Flask App | `http://flask-app:5000/health` | HTTP(s) |
+| Grafana | `http://grafana:3000` | HTTP(s) |
+| Gitea | `http://gitea:3000` | HTTP(s) |
+| Prometheus | `http://prometheus:9090` | HTTP(s) |
+| Alertmanager | `http://alertmanager:9093` | HTTP(s) |
+| Loki | `http://loki:3100/ready` | HTTP(s) |
+ 
+**Wichtig:** Die URLs verwenden Docker-interne Container-Namen — diese funktionieren nur Container-zu-Container, nicht im Browser.
+ 
+---
+ 
+## Status-Page erstellen
+ 
+```
+Linke Sidebar → "Status Page" → "New Status Page"
+Name: DevOps Pipeline Status
+Slug: status
+→ Alle Monitors hinzufügen
+→ Save
+```
+ 
+Erreichbar unter: `http://localhost:3003/status/status`
+ 
+---
+ 
+## Aufgetretene Fehler
+ 
+| Fehler | Ursache | Fix |
+|---|---|---|
+| Port-Konflikt mit Grafana | Beide hatten Port 3002 | Uptime Kuma auf Port 3003 geändert |
+| Monitors rot (DNS_PROBE) | Browser kann Docker-Hostnamen nicht auflösen | Nur intern via Container-Namen erreichbar — normal |
+| Alertmanager/Loki/Prometheus rot | Container liefen nicht | `docker compose up -d` ausgeführt |
+ 
 
 
 ---
-
-
-
-
-
-
-
-
-
 
 
 
