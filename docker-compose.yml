@@ -7,6 +7,7 @@ volumes:
   prometheus-data:
   grafana-data:
   loki-data:
+  uptime-kuma-data:
 
 services:
 
@@ -165,5 +166,16 @@ services:
       - "--path.procfs=/host/proc"
       - "--path.sysfs=/host/sys"
       - "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)"
+    networks:
+      - devops-net
+# ─── Uptime Kuma (Status-Page) ────────────────────────────────
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime-kuma
+    restart: unless-stopped
+    volumes:
+      - uptime-kuma-data:/app/data
+    ports:
+      - "3003:3001"
     networks:
       - devops-net
