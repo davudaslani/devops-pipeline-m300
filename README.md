@@ -880,7 +880,7 @@ Aufbewahrung: **7 Tage lokal**, danach automatisch gelöscht.
 
 # Uptime Kuma — Status-Page
  
-Uptime Kuma ist eine selbst-gehostete Status-Page die zeigt welche Services UP oder DOWN sind. Ähnlich wie status.github.com — alle Services auf einen Blick überwacht.
+Uptime Kuma ist eine selbst-gehostete Status-Page die zeigt welche Services UP oder DOWN sind. Ähnlich wie githubstatus.com — alle Services auf einen Blick überwacht.
  
 ---
  
