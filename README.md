@@ -903,6 +903,8 @@ Service hinzufügen:
     networks:
       - devops-net
 ```
+
+![Service hinzufügen](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20kuma/docker-uptime-kuma-code.png)
  
 Volume ergänzen:
  
@@ -910,6 +912,8 @@ Volume ergänzen:
 volumes:
   uptime-kuma-data:
 ```
+
+![volume ergänzen](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20kuma/Docker-Volumes-kuma.png)
  
 ### 2. Starten
  
@@ -925,6 +929,8 @@ Browser: http://localhost:3003
 1. Account erstellen: admin / admin123
 2. "Create" klicken
 ```
+
+![Uptime Login Page](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20kuma/Uptime-Login-Page.png)
  
 ---
  
@@ -942,6 +948,10 @@ Für jeden Service einen Monitor erstellen unter "Add New Monitor":
 | Loki | `http://loki:3100/ready` | HTTP(s) |
  
 **Wichtig:** Die URLs verwenden Docker-interne Container-Namen — diese funktionieren nur Container-zu-Container, nicht im Browser.
+
+![Monitors eingerichtet](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20kuma/dashboard-uptime-kuma.png)
+
+![einige monitors gehen hoch](https://github.com/davudaslani/devops-pipeline-m300/blob/main/images/images%20kuma/dashboard-uptime-kuma.png)
  
 ---
  
